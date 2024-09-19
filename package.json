@@ -13,6 +13,11 @@
       "@babel/plugin-syntax-import-attributes"
     ]
   },
+  "targets": {
+      "main": {
+         "includeNodeModules": true
+      }
+   },
   "name": "krakencomponents",
   "description": "Components",
   "version": "0.0.1",
