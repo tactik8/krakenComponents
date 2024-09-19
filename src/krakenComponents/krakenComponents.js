@@ -17,6 +17,7 @@ import { KrActionMenuItemComponent} from './src/components/actionMenuItem.js'
 import { KrActionMenuComponent} from './src/components/actionMenu.js'
 
 import { KrAvatarComponent} from './src/components/avatar.js'
+import { KrFormComponent} from './src/components/form.js'
 
 
 export const krakenComponents = {
@@ -32,5 +33,6 @@ export const krakenComponents = {
     listItem: KrListItemComponent,
     actionMenuItem: KrActionMenuItemComponent,
     actionMenu: KrActionMenuComponent,
-    avatar: KrAvatarComponent
+    avatar: KrAvatarComponent,
+    form: KrFormComponent
 }

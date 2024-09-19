@@ -213,6 +213,12 @@ function redrawFromTemplate(element, template) {
 }
 
 function redrawFromTemplateID(element, templateID, value, options) {
+    
+    try {
+        element.innerHTML = krakenHtml.form?.[templateID](value, options);
+    } catch (error){
+    
+    
     try {
         element.innerHTML = krakenHtml.components[templateID](value, options);
     } catch (error) {
@@ -223,9 +229,11 @@ function redrawFromTemplateID(element, templateID, value, options) {
             try {
                 element.innerHTML = krakenHtml.base[templateID](value, options);
             } catch (error){
+                
             }
             
         }
+    }
     }
 
     

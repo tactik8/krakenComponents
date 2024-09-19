@@ -1,5 +1,6 @@
 import {krakenHtml as $5OpyM$krakenHtml} from "krakenhtml";
 import {KrCache as $5OpyM$KrCache, KrThing as $5OpyM$KrThing} from "krakenthing";
+import {KrakenSchemas as $5OpyM$KrakenSchemas} from "krakenschema";
 
 
 
@@ -226,14 +227,18 @@ function $05b54ffb0ba8dff2$var$redrawFromTemplate(element, template) {
 }
 function $05b54ffb0ba8dff2$var$redrawFromTemplateID(element, templateID, value, options) {
     try {
-        element.innerHTML = (0, $5OpyM$krakenHtml).components[templateID](value, options);
+        element.innerHTML = (0, $5OpyM$krakenHtml).form?.[templateID](value, options);
     } catch (error) {
         try {
-            element.innerHTML = (0, $5OpyM$krakenHtml).blocks[templateID](value, options);
+            element.innerHTML = (0, $5OpyM$krakenHtml).components[templateID](value, options);
         } catch (error) {
             try {
-                element.innerHTML = (0, $5OpyM$krakenHtml).base[templateID](value, options);
-            } catch (error) {}
+                element.innerHTML = (0, $5OpyM$krakenHtml).blocks[templateID](value, options);
+            } catch (error) {
+                try {
+                    element.innerHTML = (0, $5OpyM$krakenHtml).base[templateID](value, options);
+                } catch (error) {}
+            }
         }
     }
     return;
@@ -834,7 +839,6 @@ class $b1a28b5c8853cd88$export$20c9d83c26006bcb {
         this.element = element;
     }
     initObject() {
-        console.log("KrthingDb init");
         let element = document.createElement("span");
         element.classList.add("kr-db");
         element.id = String(crypto.randomUUID());
@@ -874,14 +878,10 @@ class $b1a28b5c8853cd88$export$20c9d83c26006bcb {
         }
     }
     async get(record_type, record_id) {
-        console.log("Get");
         // Get from local cache
         let thing = this._thingDb.get(record_type, record_id);
         // If not in db, get from api
-        if (!thing || thing == null) {
-            console.log("Get from api");
-            this._getFromApi(record_type, record_id);
-        }
+        if (!thing || thing == null) this._getFromApi(record_type, record_id);
         // Else create
         if (!thing || thing == null) thing = new (0, $5OpyM$KrThing)(record_type, record_id);
         return thing;
@@ -895,7 +895,6 @@ class $b1a28b5c8853cd88$export$20c9d83c26006bcb {
         thing.api.apiBasePath = this.apiBasePath;
         thing.api.apiCollection = this.apiCollection;
         let r = await thing.api.get();
-        console.log("rr", r.p.actionStatus);
         if (r.p.actionStatus == "CompletedActionStatus") {
             this.set(thing);
             return thing;
@@ -903,15 +902,11 @@ class $b1a28b5c8853cd88$export$20c9d83c26006bcb {
         return null;
     }
     set(thing) {
-        console.log("Set thing");
         if (!thing || thing == null || !thing.record_type) return;
         let previousThing = this._thingDb.get(thing.record_type, thing.record_id);
         this._thingDb.set(thing);
         // Run callbacks if changed
-        if (!previousThing || previousThing == null || JSON.stringify(previousThing.record) != JSON.stringify(thing.record)) {
-            console.log("Run callback");
-            this.runCallbacks(thing);
-        } else console.log("Things equal");
+        if (!previousThing || previousThing == null || JSON.stringify(previousThing.record) != JSON.stringify(thing.record)) this.runCallbacks(thing);
     }
     async save(thing) {
         if (!thing.api.apiUrl || thing.api.apiUrl == null || thing.api.apiUrl == "") return false;
@@ -927,12 +922,10 @@ class $b1a28b5c8853cd88$export$20c9d83c26006bcb {
         for (let thing of things)await this.save(thing);
     }
     runCallbacks(thing) {
-        console.log("KrthingDb runCallbacks");
         let KrElements = this.callbacks?.[thing.record_type]?.[thing.record_id];
         for (let k of KrElements)k.thing = thing;
     }
     addEventListener(KrElement, record_type, record_id) {
-        console.log("KrthingDb addEventListener");
         if (!record_type || record_type == null) return;
         if (!record_id || record_id == null) return;
         if (!this.callbacks?.[record_type]) this.callbacks[record_type] = {};
@@ -1160,6 +1153,36 @@ class $bf53510f82d8eae1$export$9f1dfb2a0ceb2d85 extends (0, $7323cc65eec8b764$ex
 customElements.define("kr-avatar", $bf53510f82d8eae1$export$9f1dfb2a0ceb2d85);
 
 
+
+
+
+
+
+class $e69f9ce23ebc7c8e$export$850a3ce9851fb723 extends HTMLElement {
+    constructor(){
+        super();
+    }
+    initObject() {
+        this.classList.add(this.elementClass);
+        let record_type = this.getAttribute("data-record-type");
+        console.log(record_type);
+        let k = (0, $5OpyM$KrakenSchemas).get(record_type);
+        let jsonSchema = k.jsonSchemaLight;
+        console.log(jsonSchema);
+        let content = (0, $5OpyM$krakenHtml).form.generic("https://www.test.com", "Thing", null, "en-US", true);
+        this.innerHTML = content;
+    }
+    connectedCallback() {
+        //this.initObject()
+        this.initObject();
+    }
+    disconnectedCallback() {}
+    adoptedCallback() {}
+    attributeChangedCallback(name, oldValue, newValue) {}
+}
+customElements.define("kr-form", $e69f9ce23ebc7c8e$export$850a3ce9851fb723);
+
+
 const $034202d93aa8b171$export$bd50e30f3016e7fd = {
     thing: (0, $2d33543a9bc71c8e$export$8c1c4e47f3e6175c),
     thingDb: (0, $6211005fb3be0701$export$662db0d4991580e7),
@@ -1172,7 +1195,8 @@ const $034202d93aa8b171$export$bd50e30f3016e7fd = {
     listItem: (0, $e3b5b019f24969f6$export$61fb2ce45157810c),
     actionMenuItem: (0, $d0adf6a54097c6b6$export$ec47c2c81113bb5f),
     actionMenu: (0, $16dfca572914fe73$export$58d42cdddbf7a709),
-    avatar: (0, $bf53510f82d8eae1$export$9f1dfb2a0ceb2d85)
+    avatar: (0, $bf53510f82d8eae1$export$9f1dfb2a0ceb2d85),
+    form: (0, $e69f9ce23ebc7c8e$export$850a3ce9851fb723)
 };
 
 

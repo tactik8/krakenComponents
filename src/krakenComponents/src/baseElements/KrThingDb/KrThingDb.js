@@ -27,7 +27,6 @@ export class KrThingDb {
 
 
     initObject(){
-        console.log('KrthingDb init')
         let element = document.createElement('span')
         element.classList.add('kr-db')
         element.id = String(crypto.randomUUID())
@@ -88,13 +87,11 @@ export class KrThingDb {
 
     async get(record_type, record_id){
 
-        console.log('Get')
         // Get from local cache
         let thing = this._thingDb.get(record_type, record_id)
 
         // If not in db, get from api
         if(!thing || thing == null){
-            console.log('Get from api')
             this._getFromApi(record_type, record_id)
         }
 
@@ -123,7 +120,6 @@ export class KrThingDb {
 
         let r = await thing.api.get()
 
-        console.log('rr', r.p.actionStatus)
         if(r.p.actionStatus == 'CompletedActionStatus'){
             this.set(thing)
             return thing
@@ -135,7 +131,6 @@ export class KrThingDb {
 
     set(thing){
 
-        console.log('Set thing')
         if(!thing || thing == null || !thing.record_type) { return }
 
         let previousThing = this._thingDb.get(thing.record_type, thing.record_id)
@@ -147,10 +142,8 @@ export class KrThingDb {
 
         // Run callbacks if changed
         if(!previousThing || previousThing == null || JSON.stringify(previousThing.record) != JSON.stringify(thing.record)){
-            console.log('Run callback')
             this.runCallbacks(thing)
         } else {
-            console.log('Things equal')
         }
     }
 
@@ -184,7 +177,6 @@ export class KrThingDb {
 
     runCallbacks(thing){
 
-        console.log('KrthingDb runCallbacks')
         let KrElements = this.callbacks?.[thing.record_type]?.[thing.record_id]
 
         for(let k of KrElements){
@@ -196,7 +188,6 @@ export class KrThingDb {
 
     addEventListener(KrElement, record_type, record_id){
 
-        console.log('KrthingDb addEventListener')
 
 
         if(!record_type || record_type == null){ return }

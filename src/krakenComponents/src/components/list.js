@@ -22,8 +22,7 @@ export class KrListComponent extends KrComponent {
 
     `
   }
-  
+
 }
 
 customElements.define("kr-list", KrListComponent);
-

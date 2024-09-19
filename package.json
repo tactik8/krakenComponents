@@ -18,8 +18,10 @@
   "version": "0.0.1",
   "dependencies": {
     "krakenhtml": "^1.0.58",
+    "krakenschema": "^1.0.8",
     "krakenthing": "^1.0.68"
   },
+   "includeNodeModules": ["krakenhtml", "krakenschema", "krakenthing", "krakenhelpers", "uuid", "krakenrecord"], 
   "author": "Tactik8",
   "license": "ISC"
 }
